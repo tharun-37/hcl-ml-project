@@ -1,9 +1,0 @@
-venv/
-logs/
-predictions.db
-*.log
-.git/
-.vercel/
-data/
-__pycache__/
-*.pyc

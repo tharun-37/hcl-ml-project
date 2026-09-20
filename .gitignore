@@ -7,3 +7,4 @@ predictions.db
 .DS_Store
 .vercel/
 .write_test
+.vercel
