@@ -9,7 +9,6 @@ import sys
 import logging
 from datetime import datetime
 from pydantic import ValidationError
-import shap
 
 from config import Config
 from validators import BatteryPredictionRequest
@@ -244,16 +243,16 @@ def predict():
         # Explainable AI (SHAP breakdown)
         local_shap = []
         try:
+            import shap as _shap
             if hasattr(reg_model, 'estimators_'):
-                explainer = shap.TreeExplainer(reg_model)
+                explainer = _shap.TreeExplainer(reg_model)
                 sv = explainer.shap_values(input_df)[0]
             else:
                 if X_sample is not None:
-                    explainer = shap.KernelExplainer(reg_model.predict, X_sample.iloc[:20])
+                    explainer = _shap.KernelExplainer(reg_model.predict, X_sample.iloc[:20])
                     sv = explainer.shap_values(input_df)[0]
                 else:
                     sv = np.zeros(len(feature_cols))
-
             for feat, val, s_val in zip(feature_cols, input_df.iloc[0], sv):
                 local_shap.append({
                     'feature': feat,
