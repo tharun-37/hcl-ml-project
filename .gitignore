@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+logs/
+predictions.db
+*.log
+.DS_Store

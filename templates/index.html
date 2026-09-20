@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery RUL & Health Monitoring System | Material-Handling PHM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --accent-green: #10b981;
+            --accent-green-bg: #ecfdf5;
+            --accent-green-border: #a7f3d0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
+            --radius-md: 10px;
+            --radius-sm: 6px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            overflow-x: hidden;
+            letter-spacing: -0.01em;
+        }
+
+        .header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-pill {
+            background: #dbeafe;
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .header h1 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 430px minmax(0, 1fr) 420px;
+            gap: 16px;
+            padding: 16px 24px 20px 24px;
+            flex: 1;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            align-items: stretch;
+        }
+
+        .panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+            margin-bottom: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .preset-btn {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 3px 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid #bfdbfe;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .preset-btn:hover {
+            background: #dbeafe;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .value-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid #dbeafe;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--primary);
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 3px;
+        }
+
+        input[type="file"], select {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        select:focus, input[type="file"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button.btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 10px 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.15s ease;
+        }
+
+        button.btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .result-box {
+            padding: 14px 16px;
+            background-color: var(--accent-green-bg);
+            border: 1px solid var(--accent-green-border);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            display: none;
+        }
+
+        .result-box h3 {
+            color: #065f46;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .result-box p {
+            font-size: 12px;
+            color: #047857;
+            margin-top: 3px;
+        }
+
+        .strategy-banner {
+            margin-top: 6px;
+            padding: 8px 10px;
+            background: #ffffff;
+            border: 1px dashed #059669;
+            border-radius: 5px;
+            font-size: 11px;
+            color: #065f46;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .xai-box {
+            display: none;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            font-size: 12px;
+        }
+
+        .xai-title {
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .xai-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 14px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .chart-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .table-custom th, .table-custom td {
+            text-align: left;
+            padding: 7px 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table-custom th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.04em;
+        }
+
+        .table-custom tr.active-row {
+            background-color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        .accuracy-badge {
+            display: inline-block;
+            background-color: var(--accent-green-bg);
+            color: #065f46;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--accent-green-border);
+        }
+
+        .importance-bar-container {
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            height: 6px;
+            width: 100%;
+        }
+
+        .importance-bar {
+            background: var(--primary);
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .batch-box {
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+        }
+
+        @media (max-width: 1280px) {
+            .main-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+            .panel.full-width-mobile {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                padding: 12px;
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title-group">
+            <h1>Li-ion Battery Prognostics & Health Management System</h1>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <!-- LEFT PANEL: Inputs & Inference -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>AGV Battery Telemetry</span>
+                <div class="quick-actions">
+                    <button class="preset-btn" onclick="loadSample('fresh')">Fresh Battery</button>
+                    <button class="preset-btn" onclick="loadSample('aged')">Degraded Battery</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>RUL Prognostics Model</label>
+                <select id="model_name">
+                    {% for m in models %}
+                    <option value="{{ m }}" {% if m == 'Random Forest Regressor' %}selected{% endif %}>{{ m }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <div class="label-row">
+                    <label>Current Cycle Count</label>
+                    <span class="value-badge" id="val_cycle">2500 cyc</span>
+                </div>
+                <input type="range" id="cycle" min="0" max="8000" step="100" value="2500" oninput="updateVal('cycle', 'cyc')">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row">
+                    <label>Discharge Capacity (mAh)</label>
+                    <span class="value-badge" id="val_discharge_capacity">660 mAh</span>
+                </div>
+                <input type="range" id="discharge_capacity" min="450" max="740" step="1" value="660" oninput="updateVal('discharge_capacity', 'mAh')">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row">
+                    <label>Mean Cell Voltage (V)</label>
+                    <span class="value-badge" id="val_mean_voltage">3.75 V</span>
+                </div>
+                <input type="range" id="mean_voltage" min="3.40" max="4.00" step="0.01" value="3.75" oninput="updateVal('mean_voltage', 'V')">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row">
+                    <label>Operating Mean Temp (C)</label>
+                    <span class="value-badge" id="val_mean_temp">40.4 C</span>
+                </div>
+                <input type="range" id="mean_temp" min="35.0" max="45.0" step="0.1" value="40.4" oninput="updateVal('mean_temp', 'C')">
+            </div>
+
+            <div class="form-group">
+                <div class="label-row">
+                    <label>Delivered Energy (Wh)</label>
+                    <span class="value-badge" id="val_energy">2.45 Wh</span>
+                </div>
+                <input type="range" id="energy" min="1.60" max="2.80" step="0.01" value="2.45" oninput="updateVal('energy', 'Wh')">
+            </div>
+
+            <button class="btn-primary" onclick="predictRUL()">Run Prognostics & Decision Support</button>
+
+            <div class="result-box" id="result-box">
+                <h3 id="predicted-rul-text">-- Cycles Remaining</h3>
+                <p id="health-status-text">Health: -- | SOH: --%</p>
+                <div class="strategy-banner" id="strategy-text">Recommended Strategy: --</div>
+            </div>
+
+            <!-- XAI SHAP Local Breakdown -->
+            <div class="xai-box" id="xai-box">
+                <div class="xai-title">Feature Contribution to RUL (SHAP):</div>
+                <div id="xai-list"></div>
+            </div>
+
+            <div class="batch-box">
+                <div class="panel-title" style="margin-bottom: 8px; border: none; padding: 0;">Fleet Batch Assessment</div>
+                <form id="batch-form" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="file" name="file" accept=".csv" required>
+                    </div>
+                    <button type="button" class="btn-primary" style="background-color: #475569; margin-top: 6px;" onclick="uploadBatch()">Process Fleet CSV Telemetry</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- CENTER PANEL: Real Visual Analytics & Degradation Graphs -->
+        <div class="panel">
+            <div class="panel-title">Prognostics & Health Analytics (PHM)</div>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <img src="/static/charts/soh_degradation.png" alt="Capacity Fade Across Cells">
+                </div>
+                <div class="chart-card">
+                    <img src="/static/charts/actual_vs_predicted.png" alt="Actual vs Predicted RUL">
+                </div>
+                <div class="chart-card">
+                    <img src="/static/charts/confusion_matrix.png" alt="EOL Classification Matrix">
+                </div>
+                <div class="chart-card">
+                    <img src="/static/charts/shap_importance.png" alt="SHAP Degradation Drivers">
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: Leaderboard, Classification & Fleet Strategy -->
+        <div class="panel full-width-mobile">
+            <div class="panel-title">Regression Benchmark (RUL Cycles)</div>
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>R2 Score</th>
+                        <th>MAE (Cyc)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for name, m in reg_metrics.items() %}
+                    <tr class="{% if 'Random Forest' in name %}active-row{% endif %}">
+                        <td>{{ name }}</td>
+                        <td><span class="accuracy-badge">{{ (m.r2 * 100)|round(1) }}%</span></td>
+                        <td>{{ m.mae }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="panel-title" style="margin-top: 6px;">Classification Benchmark (Healthy vs EOL)</div>
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Accuracy</th>
+                        <th>F1 Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for name, m in cls_metrics.items() %}
+                    <tr class="{% if 'Random Forest' in name %}active-row{% endif %}">
+                        <td>{{ name }}</td>
+                        <td><span class="accuracy-badge">{{ m.accuracy }}%</span></td>
+                        <td>{{ m.f1 }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="panel-title" style="margin-top: 6px;">Top Degradation Drivers (SHAP)</div>
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+                {% for imp in importances[:4] %}
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 600;">
+                        <span>{{ imp.feature.replace('_', ' ') }}</span>
+                        <span>{{ imp.importance }}%</span>
+                    </div>
+                    <div class="importance-bar-container">
+                        <div class="importance-bar" style="width: {{ imp.importance }}%;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="panel-title" style="margin-top: 6px;">Recent AGV Telemetry Log</div>
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Cycle</th>
+                        <th>SOH</th>
+                        <th>Pred RUL</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="history-tbody">
+                    {% for row in history %}
+                    <tr>
+                        <td>{{ row[2]|int }}</td>
+                        <td>{{ row[4]|round(1) }}%</td>
+                        <td><b>{{ row[5] }} cyc</b></td>
+                        <td><span style="font-size: 10px; font-weight: 600;">{{ row[6] }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function updateVal(id, unit) {
+            const val = document.getElementById(id).value;
+            document.getElementById('val_' + id).innerText = val + ' ' + unit;
+        }
+
+        function loadSample(type) {
+            if (type === 'fresh') {
+                document.getElementById('cycle').value = 500;
+                document.getElementById('discharge_capacity').value = 715;
+                document.getElementById('mean_voltage').value = 3.82;
+                document.getElementById('mean_temp').value = 40.3;
+                document.getElementById('energy').value = 2.68;
+            } else {
+                document.getElementById('cycle').value = 6000;
+                document.getElementById('discharge_capacity').value = 585;
+                document.getElementById('mean_voltage').value = 3.65;
+                document.getElementById('mean_temp').value = 40.6;
+                document.getElementById('energy').value = 2.15;
+            }
+
+            updateVal('cycle', 'cyc');
+            updateVal('discharge_capacity', 'mAh');
+            updateVal('mean_voltage', 'V');
+            updateVal('mean_temp', 'C');
+            updateVal('energy', 'Wh');
+            predictRUL();
+        }
+
+        async function predictRUL() {
+            const payload = {
+                model_name: document.getElementById('model_name').value,
+                cycle: parseFloat(document.getElementById('cycle').value),
+                discharge_capacity: parseFloat(document.getElementById('discharge_capacity').value),
+                mean_voltage: parseFloat(document.getElementById('mean_voltage').value),
+                min_voltage: 2.7,
+                max_voltage: 4.2,
+                std_voltage: 0.35,
+                mean_temp: parseFloat(document.getElementById('mean_temp').value),
+                max_temp: parseFloat(document.getElementById('mean_temp').value) + 0.8,
+                discharge_duration: 0.038,
+                energy: parseFloat(document.getElementById('energy').value)
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    const resultBox = document.getElementById('result-box');
+                    resultBox.style.display = 'block';
+                    document.getElementById('predicted-rul-text').innerText = `${data.predicted_rul} Cycles Remaining`;
+                    document.getElementById('health-status-text').innerHTML = `State of Health: <b>${data.soh}%</b> | Status: <b style="color:${data.health_color}">${data.health_status}</b>`;
+                    document.getElementById('strategy-text').innerText = `Decision Support: ${data.strategy_recommendation}`;
+
+                    const xaiBox = document.getElementById('xai-box');
+                    const xaiList = document.getElementById('xai-list');
+                    xaiList.innerHTML = '';
+                    if (data.local_shap && data.local_shap.length > 0) {
+                        xaiBox.style.display = 'block';
+                        data.local_shap.forEach(item => {
+                            const dirColor = item.impact > 0 ? '#10b981' : '#ef4444';
+                            const dirSign = item.impact > 0 ? '+' : '';
+                            xaiList.innerHTML += `
+                                <div class="xai-item">
+                                    <span>${item.feature.replace('_', ' ')} (${item.value})</span>
+                                    <span style="font-weight:700; color:${dirColor}">${dirSign}${item.impact} cyc</span>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    const tbody = document.getElementById('history-tbody');
+                    const newRow = `
+                        <tr>
+                            <td>${payload.cycle}</td>
+                            <td>${data.soh}%</td>
+                            <td><b>${data.predicted_rul} cyc</b></td>
+                            <td><span style="font-size: 10px; font-weight: 600;">${data.health_status}</span></td>
+                        </tr>
+                    `;
+                    tbody.innerHTML = newRow + tbody.innerHTML;
+                } else {
+                    alert('Prediction Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Request failed: ' + err);
+            }
+        }
+
+        async function uploadBatch() {
+            const form = document.getElementById('batch-form');
+            const fileInput = form.querySelector('input[type="file"]');
+            if (!fileInput.files.length) {
+                alert('Please select a CSV file first');
+                return;
+            }
+            const formData = new FormData(form);
+            formData.append('model_name', document.getElementById('model_name').value);
+
+            try {
+                const response = await fetch('/batch-predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'battery_phm_fleet_predictions.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } else {
+                    const err = await response.json();
+                    alert('Batch error: ' + err.error);
+                }
+            } catch (e) {
+                alert('Failed to upload batch file: ' + e);
+            }
+        }
+    </script>
+</body>
+</html>
