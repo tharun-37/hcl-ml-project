@@ -6,13 +6,33 @@ import sqlite3
 import io
 import os
 import sys
+import logging
 from datetime import datetime
 from pydantic import ValidationError
 import shap
 
 from config import Config
-from logging_config import setup_logging
 from validators import BatteryPredictionRequest
+
+def setup_logging(log_dir="logs", log_file="app.log"):
+    os.makedirs(log_dir, exist_ok=True)
+    log_path = os.path.join(log_dir, log_file)
+    app_logger = logging.getLogger("BatteryApp")
+    app_logger.setLevel(logging.INFO)
+    if not app_logger.handlers:
+        try:
+            file_handler = logging.FileHandler(log_path, encoding='utf-8')
+            file_handler.setLevel(logging.INFO)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            file_handler.setFormatter(formatter)
+            app_logger.addHandler(file_handler)
+        except OSError:
+            pass
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        console_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+        app_logger.addHandler(console_handler)
+    return app_logger
 
 logger = setup_logging(log_dir=Config.LOG_DIR, log_file=Config.LOG_FILE)
 
