@@ -8,3 +8,12 @@ predictions.db
 .vercel/
 .write_test
 .vercel
+
+# Documents / deliverables are not part of the codebase
+*.docx
+*.doc
+*.pptx
+*.ppt
+*.pdf
+tools/
+build/
